@@ -11,6 +11,16 @@ use League\OAuth1\Client\Credentials\TemporaryCredentials;
 use League\OAuth1\Client\Credentials\TokenCredentials;
 use League\OAuth1\Client\Server\User;
 
+/**
+ * Garmin OAuth
+ * The Garmin implementation of the OAuth client
+ *
+ * Based off of code by Mustapha:
+ * (https://github.com/stoufa06/php-garmin-connect-api)
+ *
+ * @see: https://github.com/thephpleague/oauth2-client
+ * @author James Van Hinsbergh
+ */
 class OAuth extends Server
 {
     /**
@@ -211,7 +221,7 @@ class OAuth extends Server
      *
      * @param mixed $data
      * @param TokenCredentials $tokenCredentials
-     *  @return string|int|null
+     * @return string|int|null
      */
     public function userUid($data, TokenCredentials $tokenCredentials)
     {
@@ -240,5 +250,49 @@ class OAuth extends Server
     public function userScreenName($data, TokenCredentials $tokenCredentials): string
     {
         return '';
+    }
+
+    /**
+     * Send a request to backfill summary type
+     *
+     * @param TokenCredentials $tokenCredentials
+     * @param string $uri
+     * @param array $params
+     * @return void
+     * @throws Exception
+     */
+    public function backfill(TokenCredentials $tokenCredentials, string $uri, array $params): void
+    {
+        $client = $this->createHttpClient();
+        $query = http_build_query($params);
+        $query = 'backfill/'.$uri.'?'.$query;
+        $headers = $this->getHeaders($tokenCredentials, 'GET', self::USER_API_URL . $query);
+
+        try {
+            $response = $client->get(self::USER_API_URL . $query, [
+                'headers' => $headers,
+            ]);
+        } catch (BadResponseException $e) {
+            $response = $e->getResponse();
+            $body = $response->getBody();
+            $statusCode = $response->getStatusCode();
+
+            throw new \Exception(
+                "Received error [$body] with status code [$statusCode] when requesting historic $uri summary."
+            );
+        }
+    }
+
+    /**
+     * Send a request to backfill activity summary
+     *
+     * @param TokenCredentials $tokenCredentials
+     * @param array $params
+     * @return void
+     * @throws Exception
+     */
+    public function backfillActivitySummary(TokenCredentials $tokenCredentials, array $params): void
+    {
+        $this->backfill($tokenCredentials, 'activities', $params);
     }
 }
