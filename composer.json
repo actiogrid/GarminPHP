@@ -2,7 +2,7 @@
   "name": "djjavo/garminphp",
   "description": "Garmin API PHP client with OAuth authentication",
   "keywords": [
-    "src/Garmin",
+    "Garmin",
     "API",
     "OAuth",
     "PHP",
