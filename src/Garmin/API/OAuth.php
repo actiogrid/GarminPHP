@@ -24,12 +24,12 @@ use League\OAuth1\Client\Server\User;
 class OAuth extends Server
 {
     /**
-     * Api connect endpoint
+     * URL for the Garmin Connect endpoint
      */
     const API_URL = "https://connectapi.garmin.com/";
 
     /**
-     * Rest api endpoint
+     * URL for the Garmin REST API endpoint
      */
     const USER_API_URL = "https://healthapi.garmin.com/wellness-api/rest/";
 
@@ -77,10 +77,8 @@ class OAuth extends Server
         if ($temporaryIdentifier instanceof TemporaryCredentials) {
             $temporaryIdentifier = $temporaryIdentifier->getIdentifier();
         }
-        //$parameters = array('oauth_token' => $temporaryIdentifier, 'oauth_callback' => 'http://70.38.37.105:1225');
 
         $url = $this->urlAuthorization();
-        //$queryString = http_build_query($parameters);
         $queryString = "oauth_token=" . $temporaryIdentifier . "&oauth_callback=" . $this->clientCredentials->getCallbackUri();
 
         return $this->buildUrl($url, $queryString);
@@ -102,7 +100,7 @@ class OAuth extends Server
     public function getTokenCredentials(TemporaryCredentials $temporaryCredentials, string $temporaryIdentifier, string $verifier): TokenCredentials
     {
         if ($temporaryIdentifier !== $temporaryCredentials->getIdentifier()) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Temporary identifier passed back by server does not match that of stored temporary credentials.
                 Potential man-in-the-middle.'
             );
@@ -123,7 +121,7 @@ class OAuth extends Server
             throw $this->getCredentialsExceptionForBadResponse($e, 'token credentials');
         }
 
-        return $this->createTokenCredentials((string)$response->getBody());
+        return $this->createTokenCredentials((string) $response->getBody());
     }
 
     /**
@@ -160,13 +158,13 @@ class OAuth extends Server
     }
 
     /**
-     * delete user access token: deregistration
+     * Send a HTTP delete request to revoke the user's access token
      *
      * @param TokenCredentials $tokenCredentials
      * @return void
      * @throws Exception
      */
-    public function deleteUserAccessToken(TokenCredentials $tokenCredentials): void
+    public function revokeToken(TokenCredentials $tokenCredentials): void
     {
         $uri = 'user/registration';
         $client = $this->createHttpClient();
