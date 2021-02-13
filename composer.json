@@ -1,5 +1,5 @@
 {
-  "name": "djjavo/garminphp",
+  "name": "actiogrid/garminphp",
   "description": "Garmin API PHP client with OAuth authentication",
   "keywords": [
     "Garmin",
@@ -20,6 +20,9 @@
     {
       "name": "James Van Hinsbergh",
       "email": "info@jamesvanhinsbergh.co.uk"
+    },
+    {
+      "name": "David Purser"
     }
   ],
   "minimum-stability": "stable",
