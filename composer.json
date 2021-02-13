@@ -19,10 +19,11 @@
   "authors": [
     {
       "name": "James Van Hinsbergh",
-      "email": "info@jamesvanhinsbergh.co.uk"
+      "email": "james@actiogrid.com"
     },
     {
-      "name": "David Purser"
+      "name": "David Purser",
+      "email": "david@actiogrid.com"
     }
   ],
   "minimum-stability": "stable",
