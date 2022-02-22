@@ -99,7 +99,7 @@ class OAuth extends Server
      * @throws GuzzleException
      * @throws InvalidArgumentException
      */
-    public function getTokenCredentials(TemporaryCredentials $temporaryCredentials, string $temporaryIdentifier, string $verifier): TokenCredentials
+    public function getTokenCredentials(TemporaryCredentials $temporaryCredentials, $temporaryIdentifier, $verifier): TokenCredentials
     {
         if ($temporaryIdentifier !== $temporaryCredentials->getIdentifier()) {
             throw new InvalidArgumentException(
@@ -120,7 +120,7 @@ class OAuth extends Server
                 'form_params' => $bodyParameters
             ]);
         } catch (BadResponseException $e) {
-            throw $this->getCredentialsExceptionForBadResponse($e, 'token credentials');
+            $this->handleTokenCredentialsBadResponse($e);
         }
 
         return $this->createTokenCredentials((string) $response->getBody());
@@ -137,7 +137,7 @@ class OAuth extends Server
      * @param array $bodyParameters
      * @return string
      */
-    protected function protocolHeader(string $method, string $uri, CredentialsInterface $credentials, array $bodyParameters = array()): string
+    protected function protocolHeader($method, $uri, CredentialsInterface $credentials, array $bodyParameters = array()): string
     {
         $parameters = array_merge(
             $this->baseProtocolParameters(),
