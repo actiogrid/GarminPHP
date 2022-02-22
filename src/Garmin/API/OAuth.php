@@ -68,9 +68,11 @@ class OAuth extends Server
      * identifier or an object instance.
      *
      * @param TemporaryCredentials|string $temporaryIdentifier
+     * @param array                       $options
+     * 
      * @return string
      */
-    public function getAuthorizationUrl($temporaryIdentifier): string
+    public function getAuthorizationUrl($temporaryIdentifier, array $options = [])
     {
         // Somebody can pass through an instance of temporary
         // credentials and we'll extract the identifier from there.
